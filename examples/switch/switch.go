@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -60,4 +61,37 @@ func main() {
 	whatAmI(true)
 	whatAmI(1)
 	whatAmI("hey")
+
+	// This evaluate each case till it hit a true or default, stoping at the first
+	// true, all the cases are excluyent to each other
+	someString := "bc"
+	switch {
+	case someString == "b":
+		fmt.Println("someString == b")
+	case strings.EqualFold(someString, "b"):
+		fmt.Println("strings.EqualFold(someString == b)")
+	default:
+		fmt.Println("default someString := bc")
+	}
+
+	// If testing the same type for different values, you can declare it inline
+	switch otherString := "bc"; otherString {
+	case "b":
+		fmt.Println("otherString == b")
+	case "bc":
+		fmt.Println("otherString == bc")
+	default:
+		fmt.Println("default otherString := bc")
+	}
+
+	// or use one declared in another place.
+	thirdString := "bc"
+	switch thirdString {
+	case "b":
+		fmt.Println("thirdString == b")
+	case "bc":
+		fmt.Println("thirdString == bc")
+	default:
+		fmt.Println("default thirdString := bc")
+	}
 }
