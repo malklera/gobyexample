@@ -48,4 +48,38 @@ func main() {
 	fmt.Println("fork:", *forkPtr)
 	fmt.Println("svar:", svar)
 	fmt.Println("tail:", flag.Args())
+
+	// How to know if a specific flag was passed.
+	wordSet := false
+	numbSet := false
+	forkSet := false
+	svarSet := false
+	fmt.Println()
+	fmt.Println("wordSet =", wordSet)
+	fmt.Println("numbSet =", numbSet)
+	fmt.Println("forkSet =", forkSet)
+	fmt.Println("svarSet =", svarSet)
+
+	flag.Visit(func(fn *flag.Flag) {
+		switch n := fn.Name; n {
+		case "word":
+			wordSet = true
+		case "numb":
+			numbSet = true
+		case "fork":
+			forkSet = true
+		case "svar":
+			svarSet = true
+		default:
+			break
+		}
+	})
+
+	fmt.Println("wordSet =", wordSet)
+	fmt.Println("numbSet =", numbSet)
+	fmt.Println("forkSet =", forkSet)
+	fmt.Println("svarSet =", svarSet)
+
+	// With this you can make some flags mandatory, others incopatible with each
+	// other.
 }
