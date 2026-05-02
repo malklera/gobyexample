@@ -21,7 +21,7 @@ func main() {
 
 	// Printing a map with e.g. `fmt.Println` will show all of
 	// its key/value pairs.
-	fmt.Println("map:", m)
+	fmt.Println("m:", m)
 
 	// Get a value for a key with `name[key]`.
 	v1 := m["k1"]
@@ -35,17 +35,19 @@ func main() {
 
 	// The builtin `len` returns the number of key/value
 	// pairs when called on a map.
-	fmt.Println("len:", len(m))
+	fmt.Println("len(m):", len(m))
 
 	// The builtin `delete` removes key/value pairs from
 	// a map.
+	fmt.Println("m:", m)
 	delete(m, "k2")
-	fmt.Println("map:", m)
+	fmt.Println("delete(m, 'k2'):", m)
 
 	// To remove *all* key/value pairs from a map, use
 	// the `clear` builtin.
-	clear(m)
 	fmt.Println("map:", m)
+	clear(m)
+	fmt.Println("clear(m):", m)
 
 	// The optional second return value when getting a
 	// value from a map indicates if the key was present
