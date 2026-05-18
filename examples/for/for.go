@@ -10,19 +10,19 @@ func main() {
 	// The most basic type, with a single condition.
 	i := 1
 	for i <= 3 {
-		fmt.Println(i)
+		fmt.Println("i:", i)
 		i = i + 1
 	}
 
 	// A classic initial/condition/after `for` loop.
 	for j := 0; j < 3; j++ {
-		fmt.Println(j)
+		fmt.Println("j:", j)
 	}
 
 	// Another way of accomplishing the basic "do this
 	// N times" iteration is `range` over an integer.
 	for i := range 3 {
-		fmt.Println("range", i)
+		fmt.Println("range i:", i)
 	}
 
 	// `for` without a condition will loop repeatedly
@@ -39,6 +39,6 @@ func main() {
 		if n%2 == 0 {
 			continue
 		}
-		fmt.Println(n)
+		fmt.Println("n:", n)
 	}
 }
