@@ -9,7 +9,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"strconv"
 	"testing"
 )
 
@@ -77,5 +79,68 @@ func BenchmarkIntMin(b *testing.B) {
 		// body many times to determine a reasonable estimate of the
 		// run-time of a single iteration.
 		IntMin(1, 2)
+	}
+}
+
+// Now lets make a more realistic function
+
+// atoiWrapper is just a wrapper that calls `strconv.Atoi()` what
+// we care about is the fact that it returns an int, and error,
+// but the error returned is a custom struct `strconv.NumError`
+func atoiWrapper(in string) (int, error) {
+	return strconv.Atoi(in)
+}
+
+func TestAtoiWrapper(t *testing.T) {
+	var numbers = []struct {
+		num  string
+		nInt int
+		err  error
+	}{
+		{"2", 2, nil},
+		{"-3", -3, nil},
+		// thi do not work
+		// {"b", 0, &strconv.NumError{Func: "Atoi", Num: "b", Err: strconv.ErrSyntax}},
+		{"b", 0, strconv.ErrSyntax},
+	}
+
+	for _, tt := range numbers {
+		t.Run(tt.num, func(t *testing.T) {
+			n, er := atoiWrapper(tt.num)
+			if n != tt.nInt || !errors.Is(er, tt.err) {
+				t.Errorf("got '%d, %v'; want '%d, %v'", n, er, tt.nInt, tt.err)
+			}
+		})
+	}
+}
+
+var errCustom = errors.New("not a number")
+
+func toInt(in string) (int, error) {
+	n, err := strconv.Atoi(in)
+	if err != nil {
+		return 0, errCustom
+	}
+	return n, nil
+}
+
+func TestToInt(t *testing.T) {
+	var numbers = []struct {
+		number string
+		nInt   int
+		err    error
+	}{
+		{"3", 3, nil},
+		{"-5", -5, nil},
+		{"b", 0, errCustom},
+	}
+
+	for _, tt := range numbers {
+		t.Run(tt.number, func(t *testing.T) {
+			n, er := toInt(tt.number)
+			if n != tt.nInt || er != tt.err {
+				t.Errorf("got '%d, %v'; want '%d, %v'", n, er, tt.nInt, tt.err)
+			}
+		})
 	}
 }
