@@ -12,7 +12,8 @@ import (
 
 func check(e error) {
 	if e != nil {
-		panic(e)
+		fmt.Fprintf(os.Stderr, "%v\n", e)
+		os.Exit(1)
 	}
 }
 
@@ -83,6 +84,17 @@ func main() {
 	fmt.Println("Visiting subdir")
 	err = filepath.WalkDir("subdir", visit)
 	check(err)
+
+	fmt.Println("Operating with os.Root")
+	rootD, err := os.OpenRoot("subdir/parent")
+	check(err)
+	fmt.Println("rootD:", rootD.Name())
+	dir, err := rootD.Open("child")
+	check(err)
+	fmt.Println("dir:", dir.Name())
+	listF, err := dir.Readdirnames(-1)
+	check(err)
+	fmt.Println("listF:", listF)
 }
 
 // `visit` is called for every file or directory found
