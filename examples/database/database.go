@@ -1,0 +1,254 @@
+// In Go, interacting with a SQL database is typically done via the
+// standard library's `database/sql` package. To prevent our core
+// business logic from being tightly coupled to a specific database
+// technology.
+//
+// By defining a database-agnostic interface in our business domain,
+// our core application logic remains oblivious to the underlying storage
+// engine. If we decide to swap SQLite for PostgreSQL or another database
+// tomorrow, we only need to implement a new repository, our business logic
+// remains completely untouched.
+//
+// This example uses the pure-Go SQLite driver `modernc.org/sqlite`, which
+// requires zero CGO configuration and runs natively anywhere.
+// The idea of this separation means that if you want to use PostgreSQL or
+// another database, even if it is not a relational one, you only change the
+// functions that deal directly with the database and nothing else.
+
+package main
+
+import (
+	"context"
+	"database/sql"
+	"errors"
+	"fmt"
+	"log"
+	"time"
+
+	// Import the pure-Go SQLite driver for registration side-effects.
+	// The driver registers itself as "sqlite" under the `database/sql` package.
+	_ "modernc.org/sqlite"
+)
+
+// First, we define our domain model. This represents our core business entity.
+type User struct {
+	ID        int64
+	Name      string
+	Email     string
+	CreatedAt time.Time
+}
+
+// This resides in our domain layer and declares *what*
+// database operations our application needs, without
+// specifying *how* they are implemented.
+type UserRepository interface {
+	Create(ctx context.Context, user *User) error
+	GetByID(ctx context.Context, id int64) (*User, error)
+	List(ctx context.Context) ([]*User, error)
+}
+
+// Now we define our business logic in the `UserService`.
+// Crucially, `UserService` depends strictly on the `UserRepository`
+// interface, not a concrete database implementation.
+type UserService struct {
+	repo UserRepository
+}
+
+// NewUserService is the constructor that injects the repository dependency.
+func NewUserService(repo UserRepository) *UserService {
+	return &UserService{repo: repo}
+}
+
+// RegisterUser contains our business logic. It performs validations
+// before delegating persistence to the repository interface.
+func (s *UserService) RegisterUser(ctx context.Context, name, email string) (*User, error) {
+	if name == "" {
+		return nil, errors.New("username cannot be empty")
+	}
+	if email == "" {
+		return nil, errors.New("email cannot be empty")
+	}
+
+	user := &User{
+		Name:      name,
+		Email:     email,
+		CreatedAt: time.Now(),
+	}
+
+	// Persist the user via our repository interface.
+	err := s.repo.Create(ctx, user)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create user: %w", err)
+	}
+
+	return user, nil
+}
+
+func main() {
+	ctx := context.Background()
+	// Establish database connection.
+	// We use an in-memory SQLite database (":memory:") for this example
+	// so that no persistent files are created on disk.
+	// Normally you pass a file path.
+	// If tomorrow you change database, this is the only line that change in your
+	// application logic.
+	db, err := SetUpDB(ctx, ":memory:")
+	if err != nil {
+		log.Fatalf("failed to setup the database: %v", err)
+	}
+	defer db.Close()
+
+	// Instantiate the concrete SQLite repository implementation.
+	userRepo := NewSQLiteUserRepository(db)
+
+	// Inject the repository dependency into our business UserService.
+	userService := NewUserService(userRepo)
+
+	// Run business logic operations!
+	fmt.Println("--- Registering Users ---")
+	alice, err := userService.RegisterUser(ctx, "Alice", "alice@example.com")
+	if err != nil {
+		log.Fatalf("failed to register Alice: %v", err)
+	}
+	fmt.Printf("Registered user: ID=%d, Name=%q, Email=%q\n", alice.ID, alice.Name, alice.Email)
+
+	bob, err := userService.RegisterUser(ctx, "Bob", "bob@example.com")
+	if err != nil {
+		log.Fatalf("failed to register Bob: %v", err)
+	}
+	fmt.Printf("Registered user: ID=%d, Name=%q, Email=%q\n", bob.ID, bob.Name, bob.Email)
+
+	// List all registered users.
+	fmt.Println("\n--- Listing All Users ---")
+	users, err := userRepo.List(ctx)
+	if err != nil {
+		log.Fatalf("failed to list users: %v", err)
+	}
+	for _, u := range users {
+		fmt.Printf("- [%d] %s (%s) created at %s\n",
+			u.ID, u.Name, u.Email, u.CreatedAt.Format("15:04:05"))
+	}
+
+	// Retrieve a single user by ID.
+	fmt.Println("\n--- Retrieving Single User ---")
+	fetched, err := userRepo.GetByID(ctx, alice.ID)
+	if err != nil {
+		log.Fatalf("failed to get user: %v", err)
+	}
+	fmt.Printf("Fetched user: ID=%d, Name=%q, Email=%q\n", fetched.ID, fetched.Name, fetched.Email)
+}
+
+// --- Concrete Database Layer (e.g., sqlite.go) ---
+
+// If we want to change our database tomorrow, we only need to write
+// a new struct that satisfies the `UserRepository` interface. All
+// database-specific queries, drivers, and drivers' behaviors live here.
+// In a real application you would put this in its own file, and provably
+// its own package, e.g. /myApp/database/sqlite.go or /myApp/database/sqlite/sqlite.go
+type sqliteUserRepository struct {
+	db *sql.DB
+}
+
+// NewSQLiteUserRepository instantiates a concrete SQLite repository.
+func NewSQLiteUserRepository(db *sql.DB) UserRepository {
+	return &sqliteUserRepository{db: db}
+}
+
+func SetUpDB(ctx context.Context, path string) (*sql.DB, error) {
+	db, err := sql.Open("sqlite", path)
+	if err != nil {
+		return nil, err
+	}
+
+	// Initialize the database schema.
+	// In production, migrations should be managed by a tool (like golang-migrate).
+	schema := `
+	CREATE TABLE IF NOT EXISTS users (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		name TEXT NOT NULL,
+		email TEXT NOT NULL UNIQUE,
+		created_at DATETIME NOT NULL
+	);`
+	if _, err := db.ExecContext(ctx, schema); err != nil {
+		db.Close()
+		return nil, err
+	}
+
+	return db, nil
+}
+
+// Create implements the interface by running an INSERT query.
+func (r *sqliteUserRepository) Create(ctx context.Context, u *User) error {
+	query := `
+		INSERT INTO users (name, email, created_at)
+		VALUES (?, ?, ?)
+	`
+	// ExecContext executes a query without returning any rows.
+	result, err := r.db.ExecContext(ctx, query, u.Name, u.Email, u.CreatedAt)
+	if err != nil {
+		return err
+	}
+
+	// Retrieve the auto-incremented ID and assign it back to the model.
+	id, err := result.LastInsertId()
+	if err != nil {
+		return err
+	}
+	u.ID = id
+	return nil
+}
+
+// GetByID implements the interface by querying a single row.
+func (r *sqliteUserRepository) GetByID(ctx context.Context, id int64) (*User, error) {
+	query := `
+		SELECT id, name, email, created_at
+		FROM users
+		WHERE id = ?
+	`
+	var u User
+	// QueryRowContext expects to return at most one row.
+	err := r.db.QueryRowContext(ctx, query, id).Scan(
+		&u.ID, &u.Name, &u.Email, &u.CreatedAt,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("user %d not found", id)
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+// List retrieves all users from the SQLite database.
+func (r *sqliteUserRepository) List(ctx context.Context) ([]*User, error) {
+	query := `
+		SELECT id, name, email, created_at
+		FROM users
+		ORDER BY id ASC
+	`
+	// QueryContext returns multiple rows as a sql.Rows cursor.
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	// Always close the rows cursor to release database resources.
+	defer rows.Close()
+
+	var users []*User
+	for rows.Next() {
+		var u User
+		// Scan destructures the current row values into our model fields.
+		err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, &u)
+	}
+
+	// Always check for errors that occurred during iteration.
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
