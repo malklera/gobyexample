@@ -25,14 +25,14 @@ func main() {
 	// the indexes though.
 	for i, num := range nums {
 		if num == 3 {
-			fmt.Println("index:", i)
+			fmt.Printf("i: %d, num: %d\n", i, num)
 		}
 	}
 
 	// `range` on map iterates over key/value pairs.
 	kvs := map[string]string{"a": "apple", "b": "banana"}
 	for k, v := range kvs {
-		fmt.Printf("%s -> %s\n", k, v)
+		fmt.Printf("key: %s, value: %s\n", k, v)
 	}
 
 	// `range` can also iterate over just the keys of a map.
@@ -46,6 +46,7 @@ func main() {
 	// See [Strings and Runes](strings-and-runes) for more
 	// details.
 	for i, c := range "go" {
-		fmt.Println(i, c)
+		fmt.Printf("i: %d, c: %c\n", i, c)
+		fmt.Printf("i: %d, c: %U\n", i, c)
 	}
 }
