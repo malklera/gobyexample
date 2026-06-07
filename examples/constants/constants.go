@@ -12,7 +12,7 @@ import (
 const s string = "constant"
 
 func main() {
-	fmt.Println(s)
+	fmt.Println("s:", s)
 
 	// A `const` statement can also appear inside a
 	// function body.
@@ -21,15 +21,15 @@ func main() {
 	// Constant expressions perform arithmetic with
 	// arbitrary precision.
 	const d = 3e20 / n
-	fmt.Println(d)
+	fmt.Println("d:", d)
 
 	// A numeric constant has no type until it's given
 	// one, such as by an explicit conversion.
-	fmt.Println(int64(d))
+	fmt.Println("inst64(d):", int64(d))
 
 	// A number can be given a type by using it in a
 	// context that requires one, such as a variable
 	// assignment or function call. For example, here
 	// `math.Sin` expects a `float64`.
-	fmt.Println(math.Sin(n))
+	fmt.Printf("math.Sin(%d): %f\n", n, math.Sin(n))
 }
