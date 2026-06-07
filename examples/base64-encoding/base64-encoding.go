@@ -15,25 +15,33 @@ func main() {
 
 	// Here's the `string` we'll encode/decode.
 	data := "abc123!?$*&()'-=@~"
+	fmt.Println("data:", data)
+	fmt.Println()
 
 	// Go supports both standard and URL-compatible
 	// base64. Here's how to encode using the standard
 	// encoder. The encoder requires a `[]byte` so we
 	// convert our `string` to that type.
-	sEnc := b64.StdEncoding.EncodeToString([]byte(data))
-	fmt.Println(sEnc)
+	stdEnc := b64.StdEncoding.EncodeToString([]byte(data))
+	fmt.Println("stdEnc:", stdEnc)
 
-	// Decoding may return an error, which you can check
-	// if you don't already know the input to be
-	// well-formed.
-	sDec, _ := b64.StdEncoding.DecodeString(sEnc)
-	fmt.Println(string(sDec))
+	// Decoding may return an error, even if you think
+	// the input is well formed, get accustom to always
+	// check it.
+	stdDec, err := b64.StdEncoding.DecodeString(stdEnc)
+	if err != nil {
+		fmt.Println("b64.StdEncoding.DecodeString(stdEnc):", err)
+	}
+	fmt.Println("stdDec:", string(stdDec))
 	fmt.Println()
 
 	// This encodes/decodes using a URL-compatible base64
 	// format.
-	uEnc := b64.URLEncoding.EncodeToString([]byte(data))
-	fmt.Println(uEnc)
-	uDec, _ := b64.URLEncoding.DecodeString(uEnc)
-	fmt.Println(string(uDec))
+	urlEnc := b64.URLEncoding.EncodeToString([]byte(data))
+	fmt.Println("urlEnc:", urlEnc)
+	urlDec, err := b64.URLEncoding.DecodeString(urlEnc)
+	if err != nil {
+		fmt.Println("b64.StdEncoding.DecodeString(stdEnc):", err)
+	}
+	fmt.Println("urlDec", string(urlDec))
 }
