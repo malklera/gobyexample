@@ -29,12 +29,15 @@ func main() {
 
 	// See the effect of the closure by calling `nextInt`
 	// a few times.
-	fmt.Println(nextInt())
-	fmt.Println(nextInt())
-	fmt.Println(nextInt())
+	fmt.Println("nextInt := intSeq()")
+	fmt.Println("nextInt():", nextInt())
+	fmt.Println("nextInt():", nextInt())
+	fmt.Println("nextInt():", nextInt())
+	fmt.Println()
 
 	// To confirm that the state is unique to that
 	// particular function, create and test a new one.
 	newInts := intSeq()
-	fmt.Println(newInts())
+	fmt.Println("newInts := intSeq()")
+	fmt.Println("newInts:", newInts())
 }

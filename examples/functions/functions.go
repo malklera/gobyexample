@@ -28,8 +28,8 @@ func main() {
 	// Call a function just as you'd expect, with
 	// `name(args)`.
 	res := plus(1, 2)
-	fmt.Println("1+2 =", res)
+	fmt.Println("plus(1, 2):", res)
 
 	res = plusPlus(1, 2, 3)
-	fmt.Println("1+2+3 =", res)
+	fmt.Println("plusPlus(1, 2, 3):", res)
 }
