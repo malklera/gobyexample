@@ -11,6 +11,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"unicode/utf8"
 )
 
@@ -60,6 +61,16 @@ func main() {
 		// This demonstrates passing a `rune` value to a function.
 		examineRune(runeValue)
 	}
+
+	fmt.Println()
+	frase := "How to cut? I do not know."
+	fmt.Println(frase)
+	rest, found := strings.CutSuffix(frase, "know.")
+	rest2, found2 := strings.CutSuffix(frase, "?")
+	rest3, found3 := strings.CutSuffix(frase, "know")
+	fmt.Printf("strings.CutSuffix(frase, \"know.\") rest: '%s', found: '%v'\n", rest, found)
+	fmt.Printf("strings.CutSuffix(frase, \"?\") rest2: '%s', found2: '%v'\n", rest2, found2)
+	fmt.Printf("strings.CutSuffix(frase, \"know\") rest3: '%s', found3: '%v'\n", rest3, found3)
 }
 
 func examineRune(r rune) {
