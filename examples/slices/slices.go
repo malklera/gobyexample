@@ -64,6 +64,15 @@ func main() {
 	fmt.Println("slice3:", slice3)
 	fmt.Println()
 
+	// To append a slice to another slice
+	slice3a := []string{"a", "b"}
+	slice3b := []string{"c", "d"}
+	fmt.Println("slice3a:", slice3a)
+	fmt.Println("slice3b:", slice3b)
+	fmt.Println("slice3c := append(slice3a, slice3b...)")
+	slice3c := append(slice3a, slice3b...)
+	fmt.Println("slice3c:", slice3c)
+
 	// Slices can also be `copy`'d. Here we create an
 	// empty slice `copySlice` of the same length as `s` and copy
 	// into `copySlice` from `s`.
