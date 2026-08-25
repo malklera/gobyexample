@@ -49,4 +49,17 @@ func main() {
 		fmt.Printf("i: %d, c: %c\n", i, c)
 		fmt.Printf("i: %d, c: %U\n", i, c)
 	}
+
+	fmt.Println("range over []string{}")
+	isNil := []string{}
+	for i, n := range isNil {
+		fmt.Println("i:", i)
+		fmt.Println("n:", n)
+	}
+
+	// error: cannot range over nil
+	// for i, n := range nil {
+	// 	fmt.Println("i:", i)
+	// 	fmt.Println("n:", n)
+	// }
 }
