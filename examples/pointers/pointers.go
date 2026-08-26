@@ -39,4 +39,11 @@ func main() {
 
 	// Pointers can be printed too.
 	fmt.Println("pointer:", &i)
+
+	// A new pointer to a value can be created with the
+	// builtin function `new`.
+	p := new(42)
+	fmt.Println("value at *p:", *p)
+	zeroptr(p)
+	fmt.Println("value at *p:", *p)
 }

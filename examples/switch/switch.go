@@ -51,7 +51,7 @@ func main() {
 	// can use this to discover the type of an interface
 	// value.  In this example, the variable `t` will have the
 	// type corresponding to its clause.
-	whatAmI := func(i interface{}) {
+	whatAmI := func(i any) {
 		switch t := i.(type) {
 		case bool:
 			fmt.Println("I'm a bool")
