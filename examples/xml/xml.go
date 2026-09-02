@@ -17,29 +17,36 @@ import (
 // _attribute_ rather than a nested element.
 type Plant struct {
 	XMLName xml.Name `xml:"plant"`
-	Id      int      `xml:"id,attr"`
+	ID      int      `xml:"id,attr"`
 	Name    string   `xml:"name"`
 	Origin  []string `xml:"origin"`
 }
 
 func (p Plant) String() string {
 	return fmt.Sprintf("Plant id=%v, name=%v, origin=%v",
-		p.Id, p.Name, p.Origin)
+		p.ID, p.Name, p.Origin)
 }
 
 func main() {
-	coffee := &Plant{Id: 27, Name: "Coffee"}
+	coffee := &Plant{ID: 27, Name: "Coffee"}
 	coffee.Origin = []string{"Ethiopia", "Brazil"}
 
 	// Emit XML representing our plant; using
 	// `MarshalIndent` to produce a more
 	// human-readable output.
 	out, _ := xml.MarshalIndent(coffee, " ", "  ")
+	fmt.Println("out, _ := xml.MarshalIndent(coffee, \" \", \"  \")")
+	fmt.Println("string(out)")
+	fmt.Println()
 	fmt.Println(string(out))
+	fmt.Println()
 
 	// To add a generic XML header to the output, append
 	// it explicitly.
+	fmt.Println("xml.Header + string(out)")
+	fmt.Println()
 	fmt.Println(xml.Header + string(out))
+	fmt.Println()
 
 	// Use `Unmarshal` to parse a stream of bytes with XML
 	// into a data structure. If the XML is malformed or
@@ -49,9 +56,12 @@ func main() {
 	if err := xml.Unmarshal(out, &p); err != nil {
 		panic(err)
 	}
+	fmt.Println("xml.Unmarshal(out, &p)")
+	fmt.Println()
 	fmt.Println(p)
+	fmt.Println()
 
-	tomato := &Plant{Id: 81, Name: "Tomato"}
+	tomato := &Plant{ID: 81, Name: "Tomato"}
 	tomato.Origin = []string{"Mexico", "California"}
 
 	// The `parent>child>plant` field tag tells the encoder
@@ -65,5 +75,7 @@ func main() {
 	nesting.Plants = []*Plant{coffee, tomato}
 
 	out, _ = xml.MarshalIndent(nesting, " ", "  ")
+	fmt.Println("xml.MarshalIndent(nesting, \" \", \"  \")")
+	fmt.Println()
 	fmt.Println(string(out))
 }
