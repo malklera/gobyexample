@@ -44,13 +44,14 @@ func main() {
 	s := person{name: "Sean", age: 50}
 	fmt.Println(s.name)
 
+	// Structs are mutable.
+	s.age = 51
+	fmt.Println(s)
+
 	// You can also use dots with struct pointers - the
 	// pointers are automatically dereferenced.
 	sp := &s
-	fmt.Println(sp.age)
-
-	// Structs are mutable.
-	sp.age = 51
+	sp.age = 52
 	fmt.Println(sp.age)
 
 	// If a struct type is only used for a single value, we don't

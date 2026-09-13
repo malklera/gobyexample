@@ -5,7 +5,8 @@
 package main
 
 import (
-	"encoding/json"
+	"bytes"
+	"encoding/json/v2"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -117,47 +118,40 @@ func main() {
 	// need for type assertions when accessing the decoded
 	// data.
 	str := `{"page": 1, "fruits": ["apple", "peach"]}`
-<<<<<<< HEAD
 	res := rspTag{}
 	if err := json.Unmarshal([]byte(str), &res); err != nil {
 		panic(err)
 	}
 	fmt.Println("res:", res)
 	fmt.Println("res.Fruits[0]:", res.Fruits[0])
-=======
-	res := response2{}
-	_ = json.Unmarshal([]byte(str), &res)
-	fmt.Println(res)
-	fmt.Println(res.Fruits[0])
->>>>>>> master
 
 	// In the examples above we always used bytes and
 	// strings as intermediates between the data and
 	// JSON representation on standard out. We can also
-	// stream JSON encodings directly to `os.Writer`s like
+	// stream JSON encodings directly to `io.Writer`s like
 	// `os.Stdout` or even HTTP response bodies.
-	enc := json.NewEncoder(os.Stdout)
 	d := map[string]int{"apple": 5, "lettuce": 7}
-<<<<<<< HEAD
+	enc := json.NewEncoder(os.Stdout)
 	if err := enc.Encode(d); err != nil {
 		panic(err)
 	}
-=======
-	_ = enc.Encode(d)
->>>>>>> master
 
-	// Streaming reads from `os.Reader`s like `os.Stdin`
+	// Streaming reads from `io.Reader`s like `os.Stdin`
 	// or HTTP request bodies is done with `json.Decoder`.
 	dec := json.NewDecoder(strings.NewReader(str))
-<<<<<<< HEAD
 	res1 := rspTag{}
 	if err := dec.Decode(&res1); err != nil {
 		panic(err)
 	}
-=======
-	res1 := response2{}
-	_ = dec.Decode(&res1)
->>>>>>> master
+
+	var buf bytes.Buffer
+	_ = json.MarshalWrite(&buf, d)
+	fmt.Println(buf.String())
+
+	// Streaming reads from `io.Reader`s like `os.Stdin`
+	// or HTTP request bodies is done with `json.UnmarshalRead`.
+	res1 := respTag{}
+	_ = json.UnmarshalRead(strings.NewReader(str), &res1)
 	fmt.Println(res1)
 	fmt.Println()
 

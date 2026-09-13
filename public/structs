@@ -46,7 +46,7 @@ records.</p>
             
           </td>
           <td class="code leading">
-            <a href="https://go.dev/play/p/56SPo-L2nMN"><img title="Run code" src="play.png" class="run" /></a><img title="Copy code" src="clipboard.png" class="copy" />
+            <a href="https://go.dev/play/p/lJuJCkWVURz"><img title="Run code" src="play.png" class="run" /></a><img title="Copy code" src="clipboard.png" class="copy" />
           <pre class="chroma"><code><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span></span></span></code></pre>
           </td>
         </tr>
@@ -182,6 +182,18 @@ are no active references to it.</p>
         
         <tr>
           <td class="docs">
+            <p>Structs are mutable.</p>
+
+          </td>
+          <td class="code leading">
+            
+          <pre class="chroma"><code><span class="line"><span class="cl">    <span class="nx">s</span><span class="p">.</span><span class="nx">age</span> <span class="p">=</span> <span class="mi">51</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span></span></span></code></pre>
+          </td>
+        </tr>
+        
+        <tr>
+          <td class="docs">
             <p>You can also use dots with struct pointers - the
 pointers are automatically dereferenced.</p>
 
@@ -189,18 +201,7 @@ pointers are automatically dereferenced.</p>
           <td class="code leading">
             
           <pre class="chroma"><code><span class="line"><span class="cl">    <span class="nx">sp</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">s</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">sp</span><span class="p">.</span><span class="nx">age</span><span class="p">)</span></span></span></code></pre>
-          </td>
-        </tr>
-        
-        <tr>
-          <td class="docs">
-            <p>Structs are mutable.</p>
-
-          </td>
-          <td class="code leading">
-            
-          <pre class="chroma"><code><span class="line"><span class="cl">    <span class="nx">sp</span><span class="p">.</span><span class="nx">age</span> <span class="p">=</span> <span class="mi">51</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">sp</span><span class="p">.</span><span class="nx">age</span> <span class="p">=</span> <span class="mi">52</span>
 </span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">sp</span><span class="p">.</span><span class="nx">age</span><span class="p">)</span></span></span></code></pre>
           </td>
         </tr>
@@ -237,15 +238,14 @@ struct type. This technique is commonly used for
           </td>
           <td class="code">
             
-          <pre class="chroma"><code><span class="line"><span class="cl"><span class="gp">$</span> go run structs.go
-</span></span><span class="line"><span class="cl"><span class="go">{Bob 20}
+          <pre class="chroma"><code><span class="line"><span class="cl"><span class="go">{Bob 20}
 </span></span></span><span class="line"><span class="cl"><span class="go">{Alice 30}
 </span></span></span><span class="line"><span class="cl"><span class="go">{Fred 0}
 </span></span></span><span class="line"><span class="cl"><span class="go">&amp;{Ann 40}
 </span></span></span><span class="line"><span class="cl"><span class="go">&amp;{Jon 42}
 </span></span></span><span class="line"><span class="cl"><span class="go">Sean
-</span></span></span><span class="line"><span class="cl"><span class="go">50
-</span></span></span><span class="line"><span class="cl"><span class="go">51
+</span></span></span><span class="line"><span class="cl"><span class="go">{Sean 51}
+</span></span></span><span class="line"><span class="cl"><span class="go">52
 </span></span></span><span class="line"><span class="cl"><span class="go">{Rex true}</span></span></span></code></pre>
           </td>
         </tr>
@@ -265,7 +265,7 @@ struct type. This technique is commonly used for
     </div>
     <script>
       var codeLines = [];
-      codeLines.push('');codeLines.push('package main\u000A');codeLines.push('import \"fmt\"\u000A');codeLines.push('type person struct {\u000A    name string\u000A    age  int\u000A}\u000A');codeLines.push('func newPerson(name string) *person {\u000A');codeLines.push('    p :\u003D person{name: name}\u000A    p.age \u003D 42\u000A    return \u0026p\u000A}\u000A');codeLines.push('func main() {\u000A');codeLines.push('    fmt.Println(person{\"Bob\", 20})\u000A');codeLines.push('    fmt.Println(person{name: \"Alice\", age: 30})\u000A');codeLines.push('    fmt.Println(person{name: \"Fred\"})\u000A');codeLines.push('    fmt.Println(\u0026person{name: \"Ann\", age: 40})\u000A');codeLines.push('    fmt.Println(newPerson(\"Jon\"))\u000A');codeLines.push('    s :\u003D person{name: \"Sean\", age: 50}\u000A    fmt.Println(s.name)\u000A');codeLines.push('    sp :\u003D \u0026s\u000A    fmt.Println(sp.age)\u000A');codeLines.push('    sp.age \u003D 51\u000A    fmt.Println(sp.age)\u000A');codeLines.push('    dog :\u003D struct {\u000A        name   string\u000A        isGood bool\u000A    }{\u000A        \"Rex\",\u000A        true,\u000A    }\u000A    fmt.Println(dog)\u000A}\u000A');codeLines.push('');
+      codeLines.push('');codeLines.push('package main\u000A');codeLines.push('import \"fmt\"\u000A');codeLines.push('type person struct {\u000A    name string\u000A    age  int\u000A}\u000A');codeLines.push('func newPerson(name string) *person {\u000A');codeLines.push('    p :\u003D person{name: name}\u000A    p.age \u003D 42\u000A    return \u0026p\u000A}\u000A');codeLines.push('func main() {\u000A');codeLines.push('    fmt.Println(person{\"Bob\", 20})\u000A');codeLines.push('    fmt.Println(person{name: \"Alice\", age: 30})\u000A');codeLines.push('    fmt.Println(person{name: \"Fred\"})\u000A');codeLines.push('    fmt.Println(\u0026person{name: \"Ann\", age: 40})\u000A');codeLines.push('    fmt.Println(newPerson(\"Jon\"))\u000A');codeLines.push('    s :\u003D person{name: \"Sean\", age: 50}\u000A    fmt.Println(s.name)\u000A');codeLines.push('    s.age \u003D 51\u000A    fmt.Println(s)\u000A');codeLines.push('    sp :\u003D \u0026s\u000A    sp.age \u003D 52\u000A    fmt.Println(sp.age)\u000A');codeLines.push('    dog :\u003D struct {\u000A        name   string\u000A        isGood bool\u000A    }{\u000A        \"Rex\",\u000A        true,\u000A    }\u000A    fmt.Println(dog)\u000A}\u000A');codeLines.push('');
     </script>
     <script src="site.js" async></script>
   </body>
