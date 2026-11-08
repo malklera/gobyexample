@@ -20,7 +20,7 @@ import (
 
 // By convention, errors are the last return value and
 // have type `error`, a built-in interface.
-func f(arg int) (int, error) {
+func sumThree(arg int) (int, error) {
 	if arg == 42 {
 		// `errors.New` constructs a basic `error` value
 		// with the given error message.
@@ -53,15 +53,31 @@ func makeTea(arg int) error {
 	return nil
 }
 
+type argError struct {
+	arg     int
+	message string
+}
+
+func (e argError) Error() string {
+	return fmt.Sprintf("%d - %s", e.arg, e.message)
+}
+
+func sumFour(arg int) (int, error) {
+	if arg == 42 {
+		return 0, argError{arg, "can't work with it"}
+	}
+	return arg + 4, nil
+}
+
 func main() {
 	for _, i := range []int{7, 42} {
 
 		// It's idiomatic to use an inline error check in the `if`
 		// line.
-		if r, e := f(i); e != nil {
-			fmt.Println("f failed:", e)
+		if r, e := sumThree(i); e != nil {
+			fmt.Println("sumThree failed:", e)
 		} else {
-			fmt.Println("f worked:", r)
+			fmt.Println("sumThree worked:", r)
 		}
 	}
 
@@ -83,5 +99,11 @@ func main() {
 		}
 
 		fmt.Println("Tea is ready!")
+	}
+
+	_, err := sumFour(42)
+	ae := argError{}
+	if _, ok := errors.AsType[argError](ae); ok {
+		fmt.Printf("error: %s\n", err)
 	}
 }
