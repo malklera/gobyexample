@@ -46,9 +46,9 @@ func (c circle) perim() float64 {
 // generic `measure` function taking advantage of this
 // to work on any `geometry`.
 func measure(g geometry) {
-	fmt.Println(g)
-	fmt.Println(g.area())
-	fmt.Println(g.perim())
+	fmt.Println("interface:", g)
+	fmt.Println("interface.area():", g.area())
+	fmt.Println("interface.perim():", g.perim())
 }
 
 // Sometimes it's useful to know the runtime type of an

@@ -13,6 +13,8 @@ func main() {
 	queue := make(chan string, 2)
 	queue <- "one"
 	queue <- "two"
+	// `range` receive from the channel, if you do not
+	// `close` the channel, the `range` will `panic`
 	close(queue)
 
 	// This `range` iterates over each element as it's

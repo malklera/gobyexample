@@ -19,6 +19,10 @@ func ping(pings chan<- string, msg string) {
 func pong(pings <-chan string, pongs chan<- string) {
 	msg := <-pings
 	pongs <- msg
+	// The following operations are invalid, uncoment to
+	// see the error.
+	// pings <- "hello"
+	// msg2 := <-pongs
 }
 
 func main() {

@@ -16,7 +16,7 @@ import (
 // goroutine that this function's work is done.
 func worker(done chan bool) {
 	fmt.Print("working...")
-	time.Sleep(time.Second)
+	time.Sleep(time.Second*5)
 	fmt.Println("done")
 
 	// Send a value to notify that we're done.
@@ -25,12 +25,20 @@ func worker(done chan bool) {
 
 func main() {
 
+	t := time.Now()
+	fmt.Println("Begining:", t.Format(time.TimeOnly))
+
 	// Start a worker goroutine, giving it the channel to
 	// notify on.
 	done := make(chan bool, 1)
 	go worker(done)
 
+	// This happens without waiting for `worker`
+	fmt.Println("Before reveive from done:", time.Since(t))
+
 	// Block until we receive a notification from the
 	// worker on the channel.
 	<-done
+
+	fmt.Println("After reveive from done:", time.Since(t))
 }

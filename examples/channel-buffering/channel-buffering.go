@@ -22,6 +22,9 @@ func main() {
 	messages <- "channel"
 
 	// Later we can receive these two values as usual.
-	fmt.Println(<-messages)
-	fmt.Println(<-messages)
+	fmt.Println("<-messages:", <-messages)
+	fmt.Println("<-messages:", <-messages)
+
+	// Trying to receive from an empty channel panics.
+	fmt.Println("<-messages:", <-messages)
 }

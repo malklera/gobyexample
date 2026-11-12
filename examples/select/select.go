@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"time"
+	"math/rand"
 )
 
 func main() {
@@ -19,12 +20,12 @@ func main() {
 	// of time, to simulate e.g. blocking RPC operations
 	// executing in concurrent goroutines.
 	go func() {
-		time.Sleep(1 * time.Second)
-		c1 <- "one"
+		time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
+		c1 <- "c1"
 	}()
 	go func() {
-		time.Sleep(2 * time.Second)
-		c2 <- "two"
+		time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
+		c2 <- "c2"
 	}()
 
 	// We'll use `select` to await both of these values
