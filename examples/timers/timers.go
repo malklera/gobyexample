@@ -13,6 +13,8 @@ import (
 
 func main() {
 
+	fmt.Println(time.Now().Format(time.TimeOnly))
+
 	// Timers represent a single event in the future. You
 	// tell the timer how long you want to wait, and it
 	// provides a channel that will be notified at that
@@ -24,6 +26,7 @@ func main() {
 	// fired.
 	<-timer1.C
 	fmt.Println("Timer 1 fired")
+	fmt.Println(time.Now().Format(time.TimeOnly))
 
 	// If you just wanted to wait, you could have used
 	// `time.Sleep`. One reason a timer may be useful is
@@ -38,8 +41,10 @@ func main() {
 	if stop2 {
 		fmt.Println("Timer 2 stopped")
 	}
+	fmt.Println(time.Now().Format(time.TimeOnly))
 
 	// Give the `timer2` enough time to fire, if it ever
 	// was going to, to show it is in fact stopped.
 	time.Sleep(2 * time.Second)
+	fmt.Println(time.Now().Format(time.TimeOnly))
 }
