@@ -34,6 +34,9 @@ func main() {
 		})
 	}
 
+	// `Load` is safe to use.
+	fmt.Println("ops:", ops.Load())
+
 	// Wait until all the goroutines are done.
 	wg.Wait()
 

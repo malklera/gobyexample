@@ -7,6 +7,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 	"sync"
 )
 
@@ -47,22 +48,36 @@ func main() {
 		}
 	}
 
+	fmt.Println("counters:", c.counters)
+
 	// Run several goroutines concurrently; note
 	// that they all access the same `Container`,
 	// and two of them access the same counter.
 	wg.Go(func() {
-		doIncrement("a", 10000)
+		doIncrement("a", 1)
 	})
 
-	wg.Go(func() {
-		doIncrement("a", 10000)
-	})
+	// All the sleeps are to see the actual 
+	// increment, depending of the machine this
+	// is run at, it may need different values
+	time.Sleep(1 * time.Millisecond)
+	fmt.Println("counters:", c.counters)
 
 	wg.Go(func() {
-		doIncrement("b", 10000)
+		doIncrement("a", 1)
 	})
+
+	time.Sleep(1 * time.Millisecond)
+	fmt.Println("counters:", c.counters)
+
+	wg.Go(func() {
+		doIncrement("b", 3)
+	})
+
+	time.Sleep(1 * time.Millisecond)
+	fmt.Println("counters:", c.counters)
 
 	// Wait for the goroutines to finish
 	wg.Wait()
-	fmt.Println(c.counters)
+	fmt.Println("counters:", c.counters)
 }
