@@ -73,30 +73,22 @@ func main() {
 	// To print a representation of a pointer, use `%p`.
 	fmt.Printf("pointer: %p\n", &p)
 
-	// When formatting numbers you will often want to
-	// control the width and precision of the resulting
-	// figure. To specify the width of an integer, use a
+	// When formatting outputs you will often want to
+	// control the width and/or precision of the result.
+	// To specify the width of the output, use a
 	// number after the `%` in the verb. By default the
 	// result will be right-justified and padded with
-	// spaces.
-	fmt.Printf("width1: |%6d|%6d|\n", 12, 345)
+	// spaces. Notice that this specify the minimum
+	// width, not the maximum.
+	fmt.Printf("width1:    |%6d|%6d|\n", 12, 3456789)
 
-	// You can also specify the width of printed floats,
-	// though usually you'll also want to restrict the
-	// decimal precision at the same time with the
-	// width.precision syntax.
-	fmt.Printf("width2: |%6.2f|%6.2f|\n", 1.2, 3.45)
+	// To left-justify use the `-` flag.
+	fmt.Printf("width2:    |%-6s|%-6t|\n", "foo", true)
 
-	// To left-justify, use the `-` flag.
-	fmt.Printf("width3: |%-6.2f|%-6.2f|\n", 1.2, 3.45)
-
-	// You may also want to control width when formatting
-	// strings, especially to ensure that they align in
-	// table-like output. For basic right-justified width.
-	fmt.Printf("width4: |%6s|%6s|\n", "foo", "b")
-
-	// To left-justify use the `-` flag as with numbers.
-	fmt.Printf("width5: |%-6s|%-6s|\n", "foo", "b")
+	// You can also restrict the decimal precision at
+	// the same time with the width.precision syntax.
+	// It adds `0` or rounds up/down as needed.
+	fmt.Printf("precision: |%.2f|%6.2f|\n", 1.2, 3.456)
 
 	// So far we've seen `Printf`, which prints the
 	// formatted string to `os.Stdout`. `Sprintf` formats
