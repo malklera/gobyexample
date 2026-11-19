@@ -21,6 +21,7 @@ func main() {
 		return cmp.Compare(len(a), len(b))
 	}
 
+	fmt.Println("Before:", fruits)
 	// Now we can call `slices.SortFunc` with this custom
 	// comparison function to sort `fruits` by name length.
 	slices.SortFunc(fruits, lenCmp)
@@ -34,9 +35,9 @@ func main() {
 	}
 
 	people := []Person{
-		Person{name: "Jax", age: 37},
-		Person{name: "TJ", age: 25},
-		Person{name: "Alex", age: 72},
+		{name: "Jax", age: 37},
+		{name: "TJ", age: 25},
+		{name: "Alex", age: 72},
 	}
 
 	// Sort `people` by age using `slices.SortFunc`.
